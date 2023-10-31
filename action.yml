@@ -46,12 +46,26 @@ runs:
           echo "⏁  Authorizing Runner to ZeroTier network"
           MAX_RETRIES=10
           RETRY_COUNT=0
+          # Define a unique timestamp with a random char
+          # This is used to create a unique member name
+          # and description
+          TIMESTAMP=$(date +%s%N | cut -b1-13)
+
+          # Lets output all the variables for debugging from below":
+          echo "Timestamp: $TIMESTAMP"
+          echo "API URL: ${{ inputs.api_url }}"
+          echo "Network ID: ${{ inputs.network_id }}"
+          echo "Member ID: $member_id"
+          echo "ZeroTier CLI: $ztcli"
+
+          # Lets also echo ${GITHUB_SHA::7} with a label of github sha;
+          echo "Github SHA: ${GITHUB_SHA::7}"
           
           while ! curl -s -X POST \
           -H "Authorization: token ${{ inputs.auth_token }}" \
           -H "Content-Type: application/json" \
-          -d '{"name":"Zerotier GitHub Member '"${GITHUB_SHA::7}"'", "description": "Member created by '"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"'", "config":{"authorized":true}}' \
-          "${{ inputs.api_url }}/network/${{ inputs.network_id }}/member/${member_id}" | grep '"authorized":true'; 
+          -d '{"name":"Zerotier GitHub Member '"${TIMESTAMP}"'", "description": "Member created by '"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"'", "config":{"authorized":true}}' \
+          "${{ inputs.api_url }}/network/${{ inputs.network_id }}/member/${TIMESTAMP}" | grep '"authorized":true'; 
           do 
               RETRY_COUNT=$((RETRY_COUNT+1))
               
