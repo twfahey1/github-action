@@ -47,6 +47,24 @@ runs:
           MAX_RETRIES=10
           RETRY_COUNT=0
           
+          # Lets output all the variables for debugging from below API call:
+          echo "DEBUG: API URL: ${{ inputs.api_url }}"
+          echo "DEBUG: Network ID: ${{ inputs.network_id }}"
+          echo "DEBUG: Member ID: $member_id"
+          echo "DEBUG: Auth Token: ${{ inputs.auth_token }}"
+
+          # Lets output the assumed constructed URL to [preview it:
+          echo "DEBUG: Constructed URL: ${{ inputs.api_url }}/network/${{ inputs.network_id }}/member/${member_id}"
+
+          # Lets output debug for what the github member would be
+          echo "DEBUG: GitHub Member: Zerotier GitHub Member '"${GITHUB_SHA::7}"'"
+
+          # Lets output the github server url, and github repo, and github run id
+          echo "DEBUG: GitHub Server URL: $GITHUB_SERVER_URL"
+          echo "DEBUG: GitHub Repo: $GITHUB_REPOSITORY"
+          echo "DEBUG: GitHub Run ID: $GITHUB_RUN_ID"
+
+
           while ! curl -s -X POST \
           -H "Authorization: token ${{ inputs.auth_token }}" \
           -H "Content-Type: application/json" \
